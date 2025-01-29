@@ -1,0 +1,25 @@
+name: Sync Fork with Upstream
+
+on:
+  schedule:
+    # Synchronisiert jeden Tag um 1:00 Uhr UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch: # Manuelles Ausführen erlauben
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Fork Repository
+        uses: actions/checkout@v3
+        with:
+          repository: danielreimnitz/unifi-ddns
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Add Upstream Repository
+        run: |
+          git remote add upstream https://github.com/willswire/unifi-ddns.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main
+          git push origin main
